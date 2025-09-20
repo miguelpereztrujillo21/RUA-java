@@ -1,3 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">RUA-java</string>
+    <string name="app_name">RUA Java</string>
+    <string name="load_users">Cargar 100 Usuarios</string>
+    <string name="refresh">Actualizar</string>
+    <string name="search_hint">Buscar usuarios...</string>
+    <string name="no_users">No hay usuarios disponibles</string>
+    <string name="add_to_contacts">Agregar</string>
+    <string name="show_qr">Ver QR</string>
+    <string name="user_details">Detalles del Usuario</string>
+    <string name="full_name">Nombre completo:</string>
+    <string name="email">Email:</string>
+    <string name="phone">Teléfono:</string>
+    <string name="cell">Móvil:</string>
+    <string name="address">Dirección:</string>
+    <string name="nationality">Nacionalidad:</string>
+    <string name="gender">Género:</string>
+    <string name="age">Edad:</string>
+    <string name="qr_code_title">Código QR - Contacto</string>
+    <string name="save_contact">Guardar Contacto</string>
+    <string name="close">Cerrar</string>
+    <string name="male">Masculino</string>
+    <string name="female">Femenino</string>
+    <string name="loading_users">Cargando usuarios...</string>
+    <string name="error_loading_users">Error al cargar usuarios</string>
+    <string name="added_to_contacts">Agregado a contactos</string>
+    <string name="contact_exists">El contacto ya existe</string>
 </resources>
+

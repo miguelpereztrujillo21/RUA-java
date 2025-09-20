@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/mpt/rua_java/data/remote/dto/RandomUserDto.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/mpt/rua_java/data/remote/dto/RandomUserDto.java" />
+              <option name="originalContent" value="package com.mpt.rua_java.data.remote.dto;&#10;&#10;import com.google.gson.annotations.SerializedName;&#10;import java.util.List;&#10;&#10;/**&#10; * DTO principal para la respuesta de la API RandomUser&#10; * Mapea directamente la estructura JSON según documentación oficial&#10; * https://randomuser.me/documentation&#10; */&#10;public class RandomUserResponseDto {&#10;    @SerializedName(&quot;results&quot;)&#10;    private List&lt;UserDto&gt; results;&#10;    &#10;    @SerializedName(&quot;info&quot;)&#10;    private InfoDto info;&#10;&#10;    public List&lt;UserDto&gt; getResults() { return results; }&#10;    public InfoDto getInfo() { return info; }&#10;}&#10;" />
+              <option name="updatedContent" value="package com.mpt.rua_java.data.remote.dto;&#10;&#10;import com.google.gson.annotations.SerializedName;&#10;import java.util.List;&#10;&#10;/**&#10; * DTO principal para la respuesta de la API RandomUser&#10; * Mapea directamente la estructura JSON según documentación oficial&#10; * https://randomuser.me/documentation&#10; */&#10;public class RandomUserResponseDto {&#10;    @SerializedName(&quot;results&quot;)&#10;    private List&lt;UserDto&gt; results;&#10;    &#10;    @SerializedName(&quot;info&quot;)&#10;    private InfoDto info;&#10;&#10;    public List&lt;UserDto&gt; getResults() { return results; }&#10;    public InfoDto getInfo() { return info; }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/mpt/rua_java/domain/entity/User.kt">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/mpt/rua_java/domain/entity/User.kt" />
+              <option name="updatedContent" value="package com.mpt.rua_java.domain.entity&#10;&#10;/**&#10; * Entidad de dominio que representa un usuario&#10; * Esta clase es el núcleo del negocio y no tiene dependencias externas&#10; */&#10;data class User(&#10;    val id: String,&#10;    val gender: String,&#10;    val name: Name,&#10;    val location: Location,&#10;    val email: String,&#10;    val login: Login,&#10;    val dob: DateOfBirth,&#10;    val registered: Registered,&#10;    val phone: String,&#10;    val cell: String,&#10;    val picture: Picture,&#10;    val nat: String,&#10;    val isAddedToContacts: Boolean = false&#10;) {&#10;    fun getFullName(): String = &quot;${name.title} ${name.first} ${name.last}&quot;&#10;    &#10;    fun getFullAddress(): String = with(location) {&#10;        &quot;${street.number} ${street.name}, ${city}, ${state}, ${country} ${postcode}&quot;&#10;    }&#10;    &#10;    fun getVCardData(): String {&#10;        return &quot;&quot;&quot;&#10;            BEGIN:VCARD&#10;            VERSION:3.0&#10;            FN:${getFullName()}&#10;            N:${name.last};${name.first};;${name.title};&#10;            EMAIL:$email&#10;            TEL;TYPE=CELL:$cell&#10;            TEL;TYPE=VOICE:$phone&#10;            ADR;TYPE=HOME:;;${location.street.number} ${location.street.name};${location.city};${location.state};${location.postcode};${location.country}&#10;            BDAY:${dob.date.take(10)}&#10;            GENDER:${gender.uppercase()}&#10;            END:VCARD&#10;        &quot;&quot;&quot;.trimIndent()&#10;    }&#10;}&#10;&#10;data class Name(&#10;    val title: String,&#10;    val first: String,&#10;    val last: String&#10;)&#10;&#10;data class Location(&#10;    val street: Street,&#10;    val city: String,&#10;    val state: String,&#10;    val country: String,&#10;    val postcode: String,&#10;    val coordinates: Coordinates,&#10;    val timezone: Timezone&#10;)&#10;&#10;data class Street(&#10;    val number: Int,&#10;    val name: String&#10;)&#10;&#10;data class Coordinates(&#10;    val latitude: String,&#10;    val longitude: String&#10;)&#10;&#10;data class Timezone(&#10;    val offset: String,&#10;    val description: String&#10;)&#10;&#10;data class Login(&#10;    val uuid: String,&#10;    val username: String,&#10;    val password: String,&#10;    val salt: String,&#10;    val md5: String,&#10;    val sha1: String,&#10;    val sha256: String&#10;)&#10;&#10;data class DateOfBirth(&#10;    val date: String,&#10;    val age: Int&#10;)&#10;&#10;data class Registered(&#10;    val date: String,&#10;    val age: Int&#10;)&#10;&#10;data class Picture(&#10;    val large: String,&#10;    val medium: String,&#10;    val thumbnail: String&#10;)" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
