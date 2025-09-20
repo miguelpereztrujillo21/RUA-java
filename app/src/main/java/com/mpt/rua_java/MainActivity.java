@@ -5,19 +5,23 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.mpt.rua_java.databinding.ActivityMainBinding;
 import com.mpt.rua_java.domain.entity.User;
 import com.mpt.rua_java.presentation.ui.adapter.UserAdapter;
 import com.mpt.rua_java.presentation.util.QRCodeGenerator;
-import com.mpt.rua_java.presentation.viewmodel.UserViewModel;
-import dagger.hilt.android.AndroidEntryPoint;
+import com.mpt.rua_java.presentation.viewmodel.MainViewModel;
+
 import javax.inject.Inject;
-import android.widget.ImageView;
+
+import dagger.hilt.android.AndroidEntryPoint;
 
 /**
  * Activity principal de la aplicación
@@ -31,7 +35,7 @@ import android.widget.ImageView;
 public class MainActivity extends AppCompatActivity implements UserAdapter.OnUserClickListener {
 
     private ActivityMainBinding binding;
-    private UserViewModel viewModel;
+    private MainViewModel viewModel;
     private UserAdapter adapter;
 
     @Inject
@@ -53,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
     }
 
     private void setupViewModel() {
-        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
     }
 
     private void setupRecyclerView() {
@@ -180,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
 
     @Override
     public void onAddToContactsClick(User user) {
-        // Implementa el requisito: "añadir a la agenda de contactos"
         new AlertDialog.Builder(this)
             .setTitle("Agregar a Contactos")
             .setMessage("¿Deseas agregar a " + user.getFullName() + " a tu agenda de contactos?")

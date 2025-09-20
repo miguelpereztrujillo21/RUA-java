@@ -7,17 +7,17 @@ import com.mpt.rua_java.domain.entity.User;
 import com.mpt.rua_java.domain.usecase.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+
 import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 /**
- * ViewModel principal para la gestión de usuarios
+ * ViewModel principal para la MainActivity
  * Maneja el estado de la UI y coordina los casos de uso del dominio
  * No contiene lógica de negocio, solo orquesta los casos de uso
  */
 @HiltViewModel
-public class UserViewModel extends ViewModel {
+public class MainViewModel extends ViewModel {
 
     private final GetRandomUsersUseCase getRandomUsersUseCase;
     private final SaveUsersUseCase saveUsersUseCase;
@@ -44,7 +44,7 @@ public class UserViewModel extends ViewModel {
     public LiveData<Boolean> showingContacts = _showingContacts;
 
     @Inject
-    public UserViewModel(
+    public MainViewModel(
         GetRandomUsersUseCase getRandomUsersUseCase,
         SaveUsersUseCase saveUsersUseCase,
         GetAllUsersUseCase getAllUsersUseCase,
