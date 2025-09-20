@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
     private UserAdapter adapter;
+    private TextWatcher searchWatcher;
 
     @Inject
     QRCodeGenerator qrGenerator;
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
         setupObservers();
         setupListeners();
 
-        // Cargar usuarios guardados al iniciar
         viewModel.loadLocalUsers();
     }
 
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
     }
 
     private void setupObservers() {
-        // Observar lista de usuarios
+
         viewModel.users.observe(this, users -> {
             System.out.println("DEBUG UI: Lista actualizada con " + (users != null ? users.size() : 0) + " usuarios");
             if (users != null) {
@@ -77,21 +77,8 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
                 }
             }
 
-            // Verificar si estamos en modo contactos y forzar recreación del adapter
-            Boolean showingContacts = viewModel.showingContacts.getValue();
-            if (showingContacts != null && showingContacts) {
-                System.out.println("DEBUG UI: Modo contactos activo - recreando adapter");
-                // Recrear completamente el adapter para modo contactos
-                adapter = new UserAdapter();
-                adapter.setOnUserClickListener(this);
-                binding.recyclerViewUsers.setAdapter(adapter);
-                // Scroll al inicio
-                binding.recyclerViewUsers.scrollToPosition(0);
-            }
-
             adapter.setUsers(users);
 
-            // Mostrar mensaje si no hay usuarios
             if (users == null || users.isEmpty()) {
                 showEmptyState();
             } else {
@@ -99,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
             }
         });
 
-        // Observar estado de carga
         viewModel.loading.observe(this, isLoading -> {
             binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             binding.buttonLoadUsers.setEnabled(!isLoading);
@@ -107,13 +93,15 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
             binding.buttonRefresh.setEnabled(!isLoading);
         });
 
-        // Observar si estamos en modo "ver contactos"
+        // Observar si estamos en modo "ver contactos" - SOLO para cambiar UI, NO para cargar datos
         viewModel.showingContacts.observe(this, showingContacts -> {
             if (showingContacts != null && showingContacts) {
                 // Cambiar texto del botón refresh cuando estamos viendo contactos
                 binding.buttonRefresh.setText("Ver Todos");
-                // Limpiar búsqueda cuando entramos al modo contactos
+                // Evitar que limpiar el texto dispare el TextWatcher y recargue todos
+                if (searchWatcher != null) binding.editTextSearch.removeTextChangedListener(searchWatcher);
                 binding.editTextSearch.setText("");
+                if (searchWatcher != null) binding.editTextSearch.addTextChangedListener(searchWatcher);
             } else {
                 // Restaurar texto original del botón refresh
                 binding.buttonRefresh.setText(getString(R.string.refresh));
@@ -166,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
             }
         });
 
-        // Campo de búsqueda
-        binding.editTextSearch.addTextChangedListener(new TextWatcher() {
+        // Campo de búsqueda - crear TextWatcher reutilizable
+        searchWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -179,7 +167,8 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
                 String query = s.toString().trim();
                 viewModel.searchUsers(query);
             }
-        });
+        };
+        binding.editTextSearch.addTextChangedListener(searchWatcher);
     }
 
     @Override
@@ -266,6 +255,26 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
             binding.textError.getText().toString().contains("No tienes contactos")) {
             binding.textError.setVisibility(View.GONE);
         }
+    }
+
+    private void updateUIMode(Boolean showingContacts) {
+        if (showingContacts != null && showingContacts) {
+            // Modo agenda de contactos
+            binding.buttonRefresh.setText("Ver Todos");
+            binding.editTextSearch.setText("");
+            // Limpiar explícitamente el adapter antes de recrearlo
+            adapter.clearAdapter();
+            recreateAdapter();
+        } else {
+            // Modo todos los usuarios
+            binding.buttonRefresh.setText(getString(R.string.refresh));
+        }
+    }
+
+    private void recreateAdapter() {
+        adapter = new UserAdapter();
+        adapter.setOnUserClickListener(this);
+        binding.recyclerViewUsers.setAdapter(adapter);
     }
 
     @Override

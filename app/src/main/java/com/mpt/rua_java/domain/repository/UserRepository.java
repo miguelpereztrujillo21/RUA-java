@@ -76,4 +76,11 @@ public interface UserRepository {
      * @return CompletableFuture con lista de usuarios que coinciden
      */
     CompletableFuture<List<User>> searchUsersByName(String query);
+
+    /**
+     * Busca solo usuarios que están en la agenda por nombre/email
+     * @param query consulta de búsqueda
+     * @return CompletableFuture con lista de usuarios que coinciden en la agenda
+     */
+    CompletableFuture<List<User>> searchContactsByName(String query);
 }

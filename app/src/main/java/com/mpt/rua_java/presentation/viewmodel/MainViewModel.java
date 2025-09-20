@@ -25,6 +25,7 @@ public class MainViewModel extends ViewModel {
     private final AddUserToContactsUseCase addUserToContactsUseCase;
     private final GetContactsUseCase getContactsUseCase;
     private final SearchUsersUseCase searchUsersUseCase;
+    private final SearchContactsUseCase searchContactsUseCase;
 
     // LiveData para observar cambios en la UI
     private final MutableLiveData<List<User>> _users = new MutableLiveData<>();
@@ -39,7 +40,6 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<Boolean> _dataLoadedSuccessfully = new MutableLiveData<>();
     public LiveData<Boolean> dataLoadedSuccessfully = _dataLoadedSuccessfully;
 
-    // LiveData específico para mostrar si estamos en modo "ver contactos"
     private final MutableLiveData<Boolean> _showingContacts = new MutableLiveData<>(false);
     public LiveData<Boolean> showingContacts = _showingContacts;
 
@@ -50,7 +50,8 @@ public class MainViewModel extends ViewModel {
         GetAllUsersUseCase getAllUsersUseCase,
         AddUserToContactsUseCase addUserToContactsUseCase,
         GetContactsUseCase getContactsUseCase,
-        SearchUsersUseCase searchUsersUseCase
+        SearchUsersUseCase searchUsersUseCase,
+        SearchContactsUseCase searchContactsUseCase
     ) {
         this.getRandomUsersUseCase = getRandomUsersUseCase;
         this.saveUsersUseCase = saveUsersUseCase;
@@ -58,6 +59,7 @@ public class MainViewModel extends ViewModel {
         this.addUserToContactsUseCase = addUserToContactsUseCase;
         this.getContactsUseCase = getContactsUseCase;
         this.searchUsersUseCase = searchUsersUseCase;
+        this.searchContactsUseCase = searchContactsUseCase;
     }
 
     /**
@@ -170,19 +172,41 @@ public class MainViewModel extends ViewModel {
     }
 
     /**
-     * Busca usuarios por nombre
+     * Busca usuarios por nombre. En modo agenda, limita la búsqueda a contactos.
      */
     public void searchUsers(String query) {
-        if (query == null || query.trim().isEmpty()) {
-            loadLocalUsers();
+        boolean inContacts = Boolean.TRUE.equals(_showingContacts.getValue());
+        String q = query == null ? "" : query.trim();
+
+        if (inContacts) {
+            if (q.isEmpty()) {
+                // En modo agenda y sin query -> recargar SOLO contactos
+                loadContacts();
+                return;
+            }
+            _loading.setValue(true);
+            searchContactsUseCase.execute(q)
+                .thenAccept(list -> {
+                    _users.postValue(list);
+                    _loading.postValue(false);
+                })
+                .exceptionally(throwable -> {
+                    _error.postValue("Error en la búsqueda de contactos: " + throwable.getMessage());
+                    _loading.postValue(false);
+                    return null;
+                });
             return;
         }
 
+        // Modo normal (todos)
+        if (q.isEmpty()) {
+            loadLocalUsers();
+            return;
+        }
         _loading.setValue(true);
-
-        searchUsersUseCase.execute(query)
-            .thenAccept(users -> {
-                _users.postValue(users);
+        searchUsersUseCase.execute(q)
+            .thenAccept(list -> {
+                _users.postValue(list);
                 _loading.postValue(false);
             })
             .exceptionally(throwable -> {

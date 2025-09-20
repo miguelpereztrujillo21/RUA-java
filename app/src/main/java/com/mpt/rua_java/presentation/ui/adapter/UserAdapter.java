@@ -41,8 +41,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         System.out.println("DEBUG ADAPTER: setUsers llamado con " + (users != null ? users.size() : 0) + " usuarios");
         System.out.println("DEBUG ADAPTER: Lista actual tiene " + this.users.size() + " usuarios antes de limpiar");
 
-        this.users.clear(); // Limpiar completamente la lista actual
-        if (users != null && !users.isEmpty()) {
+        // Limpiar completamente la lista actual
+        this.users.clear();
+
+        if (users != null) {
             this.users.addAll(users); // Agregar solo los nuevos usuarios
             System.out.println("DEBUG ADAPTER: Agregados " + this.users.size() + " usuarios a la lista");
             for (int i = 0; i < Math.min(3, this.users.size()); i++) {
@@ -52,7 +54,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             System.out.println("DEBUG ADAPTER: Lista vacía, limpiando adapter");
         }
 
-        notifyDataSetChanged(); // Forzar actualización completa
+        // Usar notifyDataSetChanged para garantizar actualización completa
+        notifyDataSetChanged();
         System.out.println("DEBUG ADAPTER: notifyDataSetChanged() llamado, getItemCount() = " + getItemCount());
     }
 
@@ -142,5 +145,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 if (listener != null) listener.onQRClick(user);
             });
         }
+    }
+
+    // Método público para limpiar el adapter desde fuera
+    public void clearAdapter() {
+        users.clear();
+        notifyDataSetChanged();
     }
 }

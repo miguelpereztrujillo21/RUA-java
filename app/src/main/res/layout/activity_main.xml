@@ -27,7 +27,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="4dp"
             android:text="@string/load_users"
-            android:textSize="11sp" />
+            android:textSize="@dimen/text_size_large" />
 
         <Button
             android:id="@+id/buttonViewContacts"
@@ -37,7 +37,7 @@
             android:layout_marginStart="2dp"
             android:layout_marginEnd="2dp"
             android:text="@string/view_contacts"
-            android:textSize="11sp" />
+            android:textSize="@dimen/text_size_large" />
 
         <Button
             android:id="@+id/buttonRefresh"
@@ -46,7 +46,7 @@
             android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:text="@string/refresh"
-            android:textSize="11sp" />
+            android:textSize="@dimen/text_size_large" />
 
     </LinearLayout>
 
@@ -82,6 +82,7 @@
         android:textAlignment="center"
         android:visibility="gone"
         android:layout_marginBottom="8dp"
+        android:textSize="@dimen/text_size_xsmall"
         app:layout_constraintTop_toBottomOf="@id/progressBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

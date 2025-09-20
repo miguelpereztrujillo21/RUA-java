@@ -170,4 +170,17 @@ public class UserRepositoryImpl implements UserRepository {
             }
         }, executor);
     }
+
+    @Override
+    public CompletableFuture<List<User>> searchContactsByName(String query) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return userDao.searchContactsByName(query).stream()
+                        .map(UserMapper::toDomainEntity)
+                        .collect(Collectors.toList());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }, executor);
+    }
 }

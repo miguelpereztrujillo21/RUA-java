@@ -51,4 +51,10 @@ public class UseCaseModule {
     public SearchUsersUseCase provideSearchUsersUseCase(UserRepository userRepository) {
         return new SearchUsersUseCase(userRepository);
     }
+
+    @Provides
+    @Singleton
+    public SearchContactsUseCase provideSearchContactsUseCase(UserRepository userRepository) {
+        return new SearchContactsUseCase(userRepository);
+    }
 }

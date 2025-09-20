@@ -54,4 +54,7 @@ public interface UserDao {
 
     @Query("SELECT * FROM users WHERE isAddedToContacts = 1 ORDER BY nameFirst ASC")
     List<UserEntity> getContactUsers();
+
+    @Query("SELECT * FROM users WHERE isAddedToContacts = 1 AND (\n           nameFirst LIKE '%' || :query || '%' OR\n           nameLast LIKE '%' || :query || '%' OR\n           email LIKE '%' || :query || '%' )\n           ORDER BY nameFirst ASC")
+    List<UserEntity> searchContactsByName(String query);
 }
