@@ -16,12 +16,6 @@ import com.mpt.rua_java.presentation.util.CircularOutlineProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Adaptador para mostrar la lista de usuarios en RecyclerView
- * Muestra toda la información del usuario según requisitos:
- * nombre completo, email, teléfono, dirección, género, nacionalidad, imagen de perfil
- * Usa solución nativa para imágenes circulares sin dependencias externas
- */
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
     private List<User> users = new ArrayList<>();
@@ -109,7 +103,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
 
         public void bind(User user) {
-            // Cargar imagen de perfil con Glide usando transformación circular nativa
+
             Glide.with(itemView.getContext())
                 .load(user.getPicture().getMedium())
                 .apply(RequestOptions.centerCropTransform())
@@ -117,7 +111,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 .error(R.drawable.ic_person_placeholder)
                 .into(imageProfile);
 
-            // Mostrar toda la información del usuario
             textName.setText(user.getFullName());
             textEmail.setText(user.getEmail());
             textPhone.setText("📞 " + user.getPhone());
@@ -127,12 +120,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             textNationality.setText("🌍 " + user.getNat());
             textAge.setText("🎂 " + user.getDob().getAge() + " años");
 
-            // Configurar botones
+
             String contactButtonText = user.isAddedToContacts() ? "✓ En Contactos" : "+ Agregar a Contactos";
             buttonAddToContacts.setText(contactButtonText);
             buttonAddToContacts.setEnabled(!user.isAddedToContacts());
 
-            // Listeners
+
             itemView.setOnClickListener(v -> {
                 if (listener != null) listener.onUserClick(user);
             });

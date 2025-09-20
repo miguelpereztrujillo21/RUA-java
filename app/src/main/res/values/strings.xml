@@ -28,5 +28,5 @@
     <string name="added_to_contacts">Agregado a contactos</string>
     <string name="contact_exists">El contacto ya existe</string>
     <string name="no_contacts_agenda">No tienes contactos en tu agenda. Agrega algunos usuarios primero.</string>
-    <string name="no_users_hint">No hay usuarios. Presiona 'Cargar 100 Usuarios' para obtener datos de RandomUser.me</string>
+    <string name="no_users_hint">No hay usuarios. Presiona \'Cargar 100 Usuarios\' para obtener datos de RandomUser.me</string>
 </resources>

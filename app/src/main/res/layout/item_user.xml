@@ -102,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_large"
             android:layout_marginEnd="@dimen/margin_large"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_xsmall"
             android:textColor="@android:color/darker_gray"
             android:layout_marginTop="@dimen/margin_xsmall"
             android:maxLines="2"
@@ -153,26 +153,26 @@
             app:layout_constraintTop_toBottomOf="@id/textAddress"
             app:layout_constraintEnd_toStartOf="@id/guidelineButtonStart" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/buttonAddToContacts"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:minHeight="36dp"
             android:layout_marginStart="8dp"
-            style="@style/Widget.MaterialComponents.Button"
-            android:text="@string/add_to_contacts"
-            android:textSize="10sp"
+            android:ellipsize="none"
+            android:gravity="center"
+            android:minHeight="36dp"
             android:paddingHorizontal="4dp"
             android:paddingVertical="6dp"
-            android:layout_marginBottom="6dp"
-            android:ellipsize="none"
             android:singleLine="false"
-            android:gravity="center"
-            app:layout_constraintStart_toStartOf="@id/guidelineButtonStart"
+            android:text="@string/add_to_contacts"
+            android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/guidelineButtonStart"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TouchTargetSizeCheck" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/buttonShowQR"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
