@@ -38,8 +38,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     public void setUsers(List<User> users) {
-        this.users = users != null ? users : new ArrayList<>();
-        notifyDataSetChanged();
+        System.out.println("DEBUG ADAPTER: setUsers llamado con " + (users != null ? users.size() : 0) + " usuarios");
+        System.out.println("DEBUG ADAPTER: Lista actual tiene " + this.users.size() + " usuarios antes de limpiar");
+
+        this.users.clear(); // Limpiar completamente la lista actual
+        if (users != null && !users.isEmpty()) {
+            this.users.addAll(users); // Agregar solo los nuevos usuarios
+            System.out.println("DEBUG ADAPTER: Agregados " + this.users.size() + " usuarios a la lista");
+            for (int i = 0; i < Math.min(3, this.users.size()); i++) {
+                System.out.println("DEBUG ADAPTER: Usuario " + i + " - " + this.users.get(i).getFullName());
+            }
+        } else {
+            System.out.println("DEBUG ADAPTER: Lista vacía, limpiando adapter");
+        }
+
+        notifyDataSetChanged(); // Forzar actualización completa
+        System.out.println("DEBUG ADAPTER: notifyDataSetChanged() llamado, getItemCount() = " + getItemCount());
     }
 
     @NonNull

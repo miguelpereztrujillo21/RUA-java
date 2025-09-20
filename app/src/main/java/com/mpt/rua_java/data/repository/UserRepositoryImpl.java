@@ -1,5 +1,7 @@
 package com.mpt.rua_java.data.repository;
 
+import androidx.annotation.NonNull;
+
 import com.mpt.rua_java.data.local.dao.UserDao;
 import com.mpt.rua_java.data.mapper.UserMapper;
 import com.mpt.rua_java.data.remote.api.RandomUserApiService;
@@ -41,14 +43,14 @@ public class UserRepositoryImpl implements UserRepository {
         CompletableFuture<List<User>> future = new CompletableFuture<>();
 
         Call<RandomUserResponseDto> call = apiService.getUsers(results, gender, nat, seed);
-        call.enqueue(new Callback<RandomUserResponseDto>() {
+        call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<RandomUserResponseDto> call, Response<RandomUserResponseDto> response) {
+            public void onResponse(@NonNull Call<RandomUserResponseDto> call, @NonNull Response<RandomUserResponseDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         List<User> users = response.body().getResults().stream()
-                            .map(UserMapper::toDomainEntity)
-                            .collect(Collectors.toList());
+                                .map(UserMapper::toDomainEntity)
+                                .collect(Collectors.toList());
                         future.complete(users);
                     } catch (Exception e) {
                         future.completeExceptionally(e);
@@ -111,6 +113,19 @@ public class UserRepositoryImpl implements UserRepository {
         return CompletableFuture.runAsync(() -> {
             try {
                 userDao.updateUserContactStatus(userId, isAddedToContacts);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }, executor);
+    }
+
+    @Override
+    public CompletableFuture<List<User>> getContactUsers() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return userDao.getContactUsers().stream()
+                    .map(UserMapper::toDomainEntity)
+                    .collect(Collectors.toList());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

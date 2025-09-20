@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">RUA Java</string>
     <string name="load_users">Cargar 100 Usuarios</string>
+    <string name="view_contacts">Ver Agenda</string>
     <string name="refresh">Actualizar</string>
     <string name="search_hint">Buscar usuarios...</string>
     <string name="no_users">No hay usuarios disponibles</string>
@@ -26,4 +27,3 @@
     <string name="added_to_contacts">Agregado a contactos</string>
     <string name="contact_exists">El contacto ya existe</string>
 </resources>
-

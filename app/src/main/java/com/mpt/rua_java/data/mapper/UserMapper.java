@@ -25,7 +25,7 @@ public class UserMapper {
             dto.getCell(),
             toDomainEntity(dto.getPicture()),
             dto.getNat(),
-            false
+            false  // Inicializar explícitamente como NO agregado a contactos
         );
     }
 

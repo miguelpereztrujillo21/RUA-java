@@ -51,6 +51,12 @@ public interface UserRepository {
     CompletableFuture<Void> updateUserContactStatus(String userId, boolean isAddedToContacts);
 
     /**
+     * Obtiene todos los usuarios que están marcados como contactos de la agenda
+     * @return CompletableFuture con lista de usuarios en contactos
+     */
+    CompletableFuture<List<User>> getContactUsers();
+
+    /**
      * Obtiene usuarios filtrados por género
      * @param gender género a filtrar
      * @return CompletableFuture con lista de usuarios filtrados

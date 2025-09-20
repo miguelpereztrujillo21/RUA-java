@@ -48,9 +48,9 @@ public class UserEntity {
     private String nat;
     private boolean isAddedToContacts;
 
-    // Constructor vacío requerido por Room
+    //TODO Constructor vacío requerido por Room
 
-    // Constructor completo
+
     public UserEntity(String id, String gender, String nameTitle, String nameFirst, String nameLast,
                      int streetNumber, String streetName, String city, String state, String country,
                      String postcode, String coordinatesLatitude, String coordinatesLongitude,
@@ -96,7 +96,7 @@ public class UserEntity {
         this.isAddedToContacts = isAddedToContacts;
     }
 
-    // Getters y Setters
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

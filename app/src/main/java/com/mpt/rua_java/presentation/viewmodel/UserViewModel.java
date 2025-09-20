@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.mpt.rua_java.domain.entity.User;
 import com.mpt.rua_java.domain.usecase.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import javax.inject.Inject;
@@ -22,6 +23,7 @@ public class UserViewModel extends ViewModel {
     private final SaveUsersUseCase saveUsersUseCase;
     private final GetAllUsersUseCase getAllUsersUseCase;
     private final AddUserToContactsUseCase addUserToContactsUseCase;
+    private final GetContactsUseCase getContactsUseCase;
     private final SearchUsersUseCase searchUsersUseCase;
 
     // LiveData para observar cambios en la UI
@@ -37,18 +39,24 @@ public class UserViewModel extends ViewModel {
     private final MutableLiveData<Boolean> _dataLoadedSuccessfully = new MutableLiveData<>();
     public LiveData<Boolean> dataLoadedSuccessfully = _dataLoadedSuccessfully;
 
+    // LiveData específico para mostrar si estamos en modo "ver contactos"
+    private final MutableLiveData<Boolean> _showingContacts = new MutableLiveData<>(false);
+    public LiveData<Boolean> showingContacts = _showingContacts;
+
     @Inject
     public UserViewModel(
         GetRandomUsersUseCase getRandomUsersUseCase,
         SaveUsersUseCase saveUsersUseCase,
         GetAllUsersUseCase getAllUsersUseCase,
         AddUserToContactsUseCase addUserToContactsUseCase,
+        GetContactsUseCase getContactsUseCase,
         SearchUsersUseCase searchUsersUseCase
     ) {
         this.getRandomUsersUseCase = getRandomUsersUseCase;
         this.saveUsersUseCase = saveUsersUseCase;
         this.getAllUsersUseCase = getAllUsersUseCase;
         this.addUserToContactsUseCase = addUserToContactsUseCase;
+        this.getContactsUseCase = getContactsUseCase;
         this.searchUsersUseCase = searchUsersUseCase;
     }
 
@@ -102,15 +110,63 @@ public class UserViewModel extends ViewModel {
      * Implementa el requisito: "añadir a la agenda de contactos"
      */
     public void addToContacts(String userId) {
+        System.out.println("DEBUG: Agregando usuario a contactos: " + userId);
         addUserToContactsUseCase.execute(userId)
             .thenRun(() -> {
+                System.out.println("DEBUG: Usuario agregado exitosamente, recargando lista");
                 // Recargar la lista para mostrar el cambio
-                loadLocalUsers();
+                if (_showingContacts.getValue() != null && _showingContacts.getValue()) {
+                    loadContacts(); // Si estamos viendo contactos, recargar contactos
+                } else {
+                    loadLocalUsers(); // Si no, recargar todos los usuarios
+                }
             })
             .exceptionally(throwable -> {
+                System.out.println("DEBUG: Error al agregar a contactos: " + throwable.getMessage());
                 _error.postValue("Error al agregar a contactos: " + throwable.getMessage());
                 return null;
             });
+    }
+
+    /**
+     * Consulta y muestra solo los usuarios que están en la agenda de contactos
+     * Nueva funcionalidad para consultar la agenda
+     */
+    public void loadContacts() {
+        _loading.postValue(true);
+        _showingContacts.postValue(true);
+
+        getContactsUseCase.execute()
+            .thenAccept(contacts -> {
+                // Agregar logs para depuración
+                System.out.println("DEBUG: Contactos obtenidos: " + contacts.size());
+                for (User contact : contacts) {
+                    System.out.println("DEBUG: Contacto - " + contact.getFullName() + " - isAddedToContacts: " + contact.isAddedToContacts());
+                }
+
+                // Asegurar que solo se muestren los contactos
+                if (contacts.isEmpty()) {
+                    _users.postValue(new ArrayList<>());
+                } else {
+                    _users.postValue(new ArrayList<>(contacts)); // Crear nueva lista para forzar actualización
+                }
+                _loading.postValue(false);
+            })
+            .exceptionally(throwable -> {
+                System.out.println("DEBUG: Error al cargar contactos: " + throwable.getMessage());
+                throwable.printStackTrace();
+                _error.postValue("Error al cargar contactos: " + throwable.getMessage());
+                _loading.postValue(false);
+                return null;
+            });
+    }
+
+    /**
+     * Vuelve a mostrar todos los usuarios (salir del modo contactos)
+     */
+    public void showAllUsers() {
+        _showingContacts.postValue(false);
+        loadLocalUsers();
     }
 
     /**

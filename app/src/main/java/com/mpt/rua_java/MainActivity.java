@@ -66,6 +66,25 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
     private void setupObservers() {
         // Observar lista de usuarios
         viewModel.users.observe(this, users -> {
+            System.out.println("DEBUG UI: Lista actualizada con " + (users != null ? users.size() : 0) + " usuarios");
+            if (users != null) {
+                for (int i = 0; i < Math.min(3, users.size()); i++) {
+                    System.out.println("DEBUG UI: Usuario " + i + " - " + users.get(i).getFullName());
+                }
+            }
+
+            // Verificar si estamos en modo contactos y forzar recreación del adapter
+            Boolean showingContacts = viewModel.showingContacts.getValue();
+            if (showingContacts != null && showingContacts) {
+                System.out.println("DEBUG UI: Modo contactos activo - recreando adapter");
+                // Recrear completamente el adapter para modo contactos
+                adapter = new UserAdapter();
+                adapter.setOnUserClickListener(this);
+                binding.recyclerViewUsers.setAdapter(adapter);
+                // Scroll al inicio
+                binding.recyclerViewUsers.scrollToPosition(0);
+            }
+
             adapter.setUsers(users);
 
             // Mostrar mensaje si no hay usuarios
@@ -80,7 +99,21 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
         viewModel.loading.observe(this, isLoading -> {
             binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             binding.buttonLoadUsers.setEnabled(!isLoading);
+            binding.buttonViewContacts.setEnabled(!isLoading);
             binding.buttonRefresh.setEnabled(!isLoading);
+        });
+
+        // Observar si estamos en modo "ver contactos"
+        viewModel.showingContacts.observe(this, showingContacts -> {
+            if (showingContacts != null && showingContacts) {
+                // Cambiar texto del botón refresh cuando estamos viendo contactos
+                binding.buttonRefresh.setText("Ver Todos");
+                // Limpiar búsqueda cuando entramos al modo contactos
+                binding.editTextSearch.setText("");
+            } else {
+                // Restaurar texto original del botón refresh
+                binding.buttonRefresh.setText(getString(R.string.refresh));
+            }
         });
 
         // Observar errores
@@ -109,10 +142,24 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
             viewModel.loadRandomUsers();
         });
 
-        // Botón para actualizar/refrescar
+        // Botón para ver agenda de contactos
+        binding.buttonViewContacts.setOnClickListener(v -> {
+            viewModel.clearError();
+            Toast.makeText(this, "Cargando agenda de contactos...", Toast.LENGTH_SHORT).show();
+            viewModel.loadContacts();
+        });
+
+        // Botón para actualizar/refrescar - comportamiento dinámico
         binding.buttonRefresh.setOnClickListener(v -> {
             viewModel.clearError();
-            viewModel.loadLocalUsers();
+            Boolean showingContacts = viewModel.showingContacts.getValue();
+            if (showingContacts != null && showingContacts) {
+                // Si estamos viendo contactos, volver a mostrar todos los usuarios
+                viewModel.showAllUsers();
+            } else {
+                // Si estamos viendo todos, refrescar la lista actual
+                viewModel.loadLocalUsers();
+            }
         });
 
         // Campo de búsqueda
@@ -202,12 +249,18 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
     }
 
     private void showEmptyState() {
-        binding.textError.setText("No hay usuarios. Presiona 'Cargar 100 Usuarios' para obtener datos de RandomUser.me");
+        Boolean showingContacts = viewModel.showingContacts.getValue();
+        if (showingContacts != null && showingContacts) {
+            binding.textError.setText("No tienes contactos en tu agenda. Agrega algunos usuarios primero.");
+        } else {
+            binding.textError.setText("No hay usuarios. Presiona 'Cargar 100 Usuarios' para obtener datos de RandomUser.me");
+        }
         binding.textError.setVisibility(View.VISIBLE);
     }
 
     private void hideEmptyState() {
-        if (binding.textError.getText().toString().contains("No hay usuarios")) {
+        if (binding.textError.getText().toString().contains("No hay usuarios") ||
+            binding.textError.getText().toString().contains("No tienes contactos")) {
             binding.textError.setVisibility(View.GONE);
         }
     }

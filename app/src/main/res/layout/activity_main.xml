@@ -25,18 +25,28 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="4dp"
             android:text="@string/load_users"
-            android:textSize="12sp" />
+            android:textSize="11sp" />
+
+        <Button
+            android:id="@+id/buttonViewContacts"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:text="@string/view_contacts"
+            android:textSize="11sp" />
 
         <Button
             android:id="@+id/buttonRefresh"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:text="@string/refresh"
-            android:textSize="12sp" />
+            android:textSize="11sp" />
 
     </LinearLayout>
 
